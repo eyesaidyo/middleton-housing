@@ -21,13 +21,19 @@ export default function LoginPage() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       
-      // Determine dashboard URL
-      const dashboardUrl = process.env.NODE_ENV === 'development'
-        ? 'http://dashboard.localhost:3000'
-        : 'https://dashboard.middleton.ng';
+      const isDashboard = window.location.hostname.startsWith('dashboard.');
       
-      // Force full page navigation to the subdomain
-      window.location.href = dashboardUrl;
+      if (isDashboard) {
+        // If we are already on the dashboard subdomain, just push to root (which middleware rewrites to /dashboard)
+        router.push('/');
+      } else {
+        // Determine dashboard URL for cross-domain jump
+        const dashboardUrl = process.env.NODE_ENV === 'development'
+          ? 'http://dashboard.localhost:3000'
+          : 'https://dashboard.middleton.ng';
+        
+        window.location.href = dashboardUrl;
+      }
     } catch (err: unknown) {
       setError('Failed to login. Please check your credentials.');
       console.error(err);

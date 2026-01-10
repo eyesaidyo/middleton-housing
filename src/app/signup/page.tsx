@@ -38,13 +38,19 @@ export default function SignupPage() {
         createdAt: new Date().toISOString(),
       });
 
-      // Determine dashboard URL
-      const dashboardUrl = process.env.NODE_ENV === 'development'
-        ? 'http://dashboard.localhost:3000'
-        : 'https://dashboard.middleton.ng';
+      const isDashboard = window.location.hostname.startsWith('dashboard.');
+      
+      if (isDashboard) {
+         router.push('/');
+      } else {
+        // Determine dashboard URL
+        const dashboardUrl = process.env.NODE_ENV === 'development'
+          ? 'http://dashboard.localhost:3000'
+          : 'https://dashboard.middleton.ng';
 
-      // Force full page navigation to the subdomain
-      window.location.href = dashboardUrl;
+        // Force full page navigation to the subdomain
+        window.location.href = dashboardUrl;
+      }
     } catch (err: unknown) {
       let errorMessage = 'Failed to create account.';
       const error = err as { code?: string };

@@ -22,6 +22,13 @@ export default async function middleware(req: NextRequest) {
   const isDashboard = hostname.startsWith("dashboard.");
 
   if (isDashboard) {
+    // Special handling for auth pages on the subdomain
+    // We want dashboard.middleton.ng/login to show the login page from src/app/login
+    // instead of looking for src/app/dashboard/login
+    if (url.pathname === '/login' || url.pathname === '/signup') {
+       return NextResponse.rewrite(url); 
+    }
+
     // Rewrite the URL to /dashboard/ path
     // e.g. dashboard.middleton.ng/ -> /dashboard
     // e.g. dashboard.middleton.ng/settings -> /dashboard/settings

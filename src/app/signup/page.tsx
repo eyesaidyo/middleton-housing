@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { doc, setDoc } from 'firebase/firestore';
+import { auth, db } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -26,8 +27,24 @@ export default function SignupPage() {
     }
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      router.push('/');
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Create user document in Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        email: user.email,
+        role: 'tenant', // Default role
+        createdAt: new Date().toISOString(),
+      });
+
+      // Determine dashboard URL
+      const dashboardUrl = process.env.NODE_ENV === 'development'
+        ? 'http://dashboard.localhost:3000'
+        : 'https://dashboard.middleton.ng';
+
+      // Force full page navigation to the subdomain
+      window.location.href = dashboardUrl;
     } catch (err: unknown) {
       let errorMessage = 'Failed to create account.';
       const error = err as { code?: string };

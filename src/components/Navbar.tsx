@@ -76,6 +76,12 @@ const Navbar = () => {
                 <span className="text-middleton-neon text-sm hidden md:inline-block">
                   {user.email}
                 </span>
+                <Link
+                  href={process.env.NODE_ENV === 'development' ? 'http://dashboard.localhost:3000' : 'https://dashboard.middleton.ng'}
+                  className="bg-middleton-neon text-middleton-green hover:bg-white hover:text-middleton-green px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                >
+                  Dashboard
+                </Link>
                 <button
                   onClick={logout}
                   className="text-middleton-neon hover:text-white hover:bg-middleton-denim px-3 py-2 rounded-md text-sm font-medium transition-colors"
@@ -164,6 +170,12 @@ const Navbar = () => {
                   <div className="px-3 py-2 text-middleton-neon text-base font-medium">
                     {user.email}
                   </div>
+                  <Link
+                    href={process.env.NODE_ENV === 'development' ? 'http://dashboard.localhost:3000' : 'https://dashboard.middleton.ng'}
+                    className="block text-middleton-neon hover:text-white hover:bg-middleton-denim px-3 py-2 rounded-md text-base font-medium transition-colors"
+                  >
+                    Dashboard
+                  </Link>
                   <button
                     onClick={logout}
                     className="w-full text-left text-middleton-neon hover:text-white hover:bg-middleton-denim px-3 py-2 rounded-md text-base font-medium transition-colors"

@@ -20,7 +20,14 @@ export default function LoginPage() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push('/');
+      
+      // Determine dashboard URL
+      const dashboardUrl = process.env.NODE_ENV === 'development'
+        ? 'http://dashboard.localhost:3000'
+        : 'https://dashboard.middleton.ng';
+      
+      // Force full page navigation to the subdomain
+      window.location.href = dashboardUrl;
     } catch (err: unknown) {
       setError('Failed to login. Please check your credentials.');
       console.error(err);

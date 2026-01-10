@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
+import { AuthProvider } from "@/context/AuthContext";
 
 export default function ClientLayout({
   children,
@@ -19,9 +20,9 @@ export default function ClientLayout({
   }
 
   return (
-    <>
+    <AuthProvider>
       <Navbar />
       <main className="pt-16">{children}</main>
-    </>
+    </AuthProvider>
   );
 } 

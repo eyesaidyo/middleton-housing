@@ -2,18 +2,13 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/context/AuthContext';
+import { useState } from 'react';
+
+const dashboardUrl = process.env.NEXT_PUBLIC_DASHBOARD_URL || 'http://localhost:3001';
 
 const Navbar = () => {
   const [servicesOpen, setServicesOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const { user, logout } = useAuth();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   return (
     <nav className="fixed top-0 left-0 right-0 bg-middleton-green shadow-md z-50">
@@ -30,14 +25,14 @@ const Navbar = () => {
             <div className="relative">
               <button
                 className="text-middleton-neon hover:text-white hover:bg-middleton-denim px-3 py-2 rounded-md text-sm font-medium flex items-center transition-colors"
-                onClick={() => mounted && setServicesOpen(!servicesOpen)}
+                onClick={() => setServicesOpen(!servicesOpen)}
               >
                 Services
-                <svg className={`ml-2 h-4 w-4 transition-transform ${mounted && servicesOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={`ml-2 h-4 w-4 transition-transform ${servicesOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-              {mounted && servicesOpen && (
+              {servicesOpen && (
                 <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                   <div className="py-1">
                     <Link href="/services/property-management" className="block px-4 py-2 text-sm text-gray-700 hover:bg-middleton-denim">
@@ -71,40 +66,18 @@ const Navbar = () => {
 
           {/* Right side buttons - Desktop */}
           <div className="hidden md:flex items-center space-x-4">
-            {mounted && user ? (
-              <>
-                <span className="text-middleton-neon text-sm hidden md:inline-block">
-                  {user.email}
-                </span>
-                <Link
-                  href={process.env.NODE_ENV === 'development' ? 'http://dashboard.localhost:3000' : 'https://dashboard.middleton.ng'}
-                  className="bg-middleton-neon text-middleton-green hover:bg-white hover:text-middleton-green px-4 py-2 rounded-md text-sm font-medium transition-colors"
-                >
-                  Dashboard
-                </Link>
-                <button
-                  onClick={logout}
-                  className="text-middleton-neon hover:text-white hover:bg-middleton-denim px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="text-middleton-neon hover:text-white hover:bg-middleton-denim px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/signup"
-                  className="bg-middleton-neon text-middleton-green hover:bg-white hover:text-middleton-green px-4 py-2 rounded-md text-sm font-medium transition-colors"
-                >
-                  Sign Up
-                </Link>
-              </>
-            )}
+            <a
+              href={`${dashboardUrl}/login`}
+              className="text-middleton-neon hover:text-white hover:bg-middleton-denim px-3 py-2 rounded-md text-sm font-medium transition-colors"
+            >
+              Login
+            </a>
+            <a
+              href={`${dashboardUrl}/signup`}
+              className="bg-middleton-neon text-middleton-green hover:bg-white hover:text-middleton-green px-4 py-2 rounded-md text-sm font-medium transition-colors"
+            >
+              Sign Up
+            </a>
           </div>
 
           {/* Mobile menu button */}
@@ -130,7 +103,7 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Menu */}
-      {mounted && mobileMenuOpen && (
+      {mobileMenuOpen && (
         <div className="md:hidden bg-middleton-green shadow-lg">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <Link href="/for-landlords" className="text-middleton-neon hover:text-white hover:bg-middleton-denim block px-3 py-2 rounded-md text-base font-medium transition-colors">
@@ -139,7 +112,7 @@ const Navbar = () => {
             <Link href="/for-tenants" className="text-middleton-neon hover:text-white hover:bg-middleton-denim block px-3 py-2 rounded-md text-base font-medium transition-colors">
               For Tenants
             </Link>
-            
+
             <button
               onClick={() => setServicesOpen(!servicesOpen)}
               className="w-full text-left text-middleton-neon hover:text-white hover:bg-middleton-denim px-3 py-2 rounded-md text-base font-medium flex items-center justify-between transition-colors"
@@ -149,7 +122,7 @@ const Navbar = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </button>
-            
+
             {servicesOpen && (
               <div className="pl-4 space-y-1">
                 <Link href="/services/property-management" className="text-middleton-neon hover:text-white hover:bg-middleton-denim block px-3 py-2 rounded-md text-sm transition-colors">
@@ -165,40 +138,18 @@ const Navbar = () => {
             )}
 
             <div className="border-t border-middleton-neon/30 pt-4 mt-4">
-              {user ? (
-                <>
-                  <div className="px-3 py-2 text-middleton-neon text-base font-medium">
-                    {user.email}
-                  </div>
-                  <Link
-                    href={process.env.NODE_ENV === 'development' ? 'http://dashboard.localhost:3000' : 'https://dashboard.middleton.ng'}
-                    className="block text-middleton-neon hover:text-white hover:bg-middleton-denim px-3 py-2 rounded-md text-base font-medium transition-colors"
-                  >
-                    Dashboard
-                  </Link>
-                  <button
-                    onClick={logout}
-                    className="w-full text-left text-middleton-neon hover:text-white hover:bg-middleton-denim px-3 py-2 rounded-md text-base font-medium transition-colors"
-                  >
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    href="/login"
-                    className="block text-middleton-neon hover:text-white hover:bg-middleton-denim px-3 py-2 rounded-md text-base font-medium transition-colors"
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    href="/signup"
-                    className="block mt-2 bg-middleton-neon text-middleton-green hover:bg-white hover:text-middleton-green px-3 py-2 rounded-md text-base font-medium text-center transition-colors"
-                  >
-                    Sign Up
-                  </Link>
-                </>
-              )}
+              <a
+                href={`${dashboardUrl}/login`}
+                className="block text-middleton-neon hover:text-white hover:bg-middleton-denim px-3 py-2 rounded-md text-base font-medium transition-colors"
+              >
+                Login
+              </a>
+              <a
+                href={`${dashboardUrl}/signup`}
+                className="block mt-2 bg-middleton-neon text-middleton-green hover:bg-white hover:text-middleton-green px-3 py-2 rounded-md text-base font-medium text-center transition-colors"
+              >
+                Sign Up
+              </a>
             </div>
           </div>
         </div>
@@ -207,4 +158,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar; 
+export default Navbar;
